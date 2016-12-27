@@ -16,10 +16,6 @@
 #include <algorithm>
 #include <list>
 
-/********************************************************************************************************************/
-/*																													*/
-/********************************************************************************************************************/
-
 //! Asynchronous Cache.
 //!
 //! @param	Element     Type of the elements stored in the cache
@@ -255,10 +251,6 @@ private:
     EntryList m_entries;            // The cache entries
 };
 
-/********************************************************************************************************************/
-/*																													*/
-/********************************************************************************************************************/
-
 template <typename Element, typename Key, typename Handle = void *>
 class AsynchronousCache<Element, Key, Handle>::BackDoor
 {
@@ -283,10 +275,6 @@ private:
 
     Target * m_target;
 };
-
-/********************************************************************************************************************/
-/*																													*/
-/********************************************************************************************************************/
 
 //! This function starts loading a element into the cache. When it is available, Get() will returns a pointer to
 //! it, but until then, Get() will return 0. If a requested element is released before it is loaded, the request
@@ -347,10 +335,6 @@ bool AsynchronousCache<Element, Key, Handle>::Request(Key const & key)
     return ok;
 }
 
-/********************************************************************************************************************/
-/*																													*/
-/********************************************************************************************************************/
-
 //! This function starts loading a element into the cache, however it is not available until it is also requested.
 //! If a prefetched element is released before it is loaded, the load is canceled. The element may not be loaded
 //! if there is no room in the cache.
@@ -393,10 +377,6 @@ void AsynchronousCache<Element, Key, Handle>::Prefetch(Key const & key)
     }
 }
 
-/********************************************************************************************************************/
-/*																													*/
-/********************************************************************************************************************/
-
 //! This function returns a pointer to an element in the cache. After an element is requested, Get() will return
 //! 0 until the element is available. An element that has never been requested will always return 0.
 //!
@@ -437,10 +417,6 @@ Element * AsynchronousCache<Element, Key, Handle>::Get(Key const & key)
     return result;
 }
 
-/********************************************************************************************************************/
-/*																													*/
-/********************************************************************************************************************/
-
 //! This function "releases" a cache element. Once the element is released, it is no longer usable and may be
 //! evicted from the cache at any time. Elements must be released in order to be evicted from the cache. If the
 //! cache has a limited size, then elements must be released in order to make room for new elements.
@@ -460,10 +436,6 @@ void AsynchronousCache<Element, Key, Handle>::Release(Key const & key, bool forc
         Release(pEntry, forceEviction);
     }
 }
-
-/********************************************************************************************************************/
-/*																													*/
-/********************************************************************************************************************/
 
 //! This function "releases" a cache element. Once the element is released, it is no longer usable and may be
 //! evicted from the cache at any time. Elements must be released in order to be evicted from the cache. If the
@@ -486,12 +458,7 @@ void AsynchronousCache<Element, Key, Handle>::Release(Element const * pElement, 
     }
 }
 
-/********************************************************************************************************************/
-/*																													*/
-/********************************************************************************************************************/
-
 //! This function returns @c true if there are no elements in the cache (whether active or released).
-//!
 
 template <typename Element, typename Key, typename Handle>
 bool AsynchronousCache<Element, Key, Handle>::IsEmpty() const
@@ -499,12 +466,7 @@ bool AsynchronousCache<Element, Key, Handle>::IsEmpty() const
     bool empty = m_entries.empty();
 }
 
-/********************************************************************************************************************/
-/*																													*/
-/********************************************************************************************************************/
-
 //! This function evicts all entries from the cache. An "evicted" element is removed from the cache entirely.
-//!
 
 template <typename Element, typename Key, typename Handle>
 void AsynchronousCache<Element, Key, Handle>::Clear()
@@ -517,10 +479,6 @@ void AsynchronousCache<Element, Key, Handle>::Clear()
         pEntry = Evict(pEntry);
     }
 }
-
-/********************************************************************************************************************/
-/*																													*/
-/********************************************************************************************************************/
 
 //! This function returns @c true if the specified element is in the cache, even if it is released. Elements that
 //! are loading or prefetching will return @c false.
@@ -536,10 +494,6 @@ bool AsynchronousCache<Element, Key, Handle>::IsCached(Key const & key) const
 
     return isCached;
 }
-
-/********************************************************************************************************************/
-/*																													*/
-/********************************************************************************************************************/
 
 template <typename Element, typename Key, typename Handle>
 void AsynchronousCache<Element, Key, Handle>::Release(typename EntryList::iterator & pEntry, bool forceEviction)
@@ -563,10 +517,6 @@ void AsynchronousCache<Element, Key, Handle>::Release(typename EntryList::iterat
     }
 }
 
-/********************************************************************************************************************/
-/*																													*/
-/********************************************************************************************************************/
-
 template <typename Element, typename Key, typename Handle>
 typename std::list<typename AsynchronousCache<Element, Key, Handle>::Entry>::iterator AsynchronousCache<Element, Key, Handle>::Find(
     Key const & key)
@@ -575,10 +525,6 @@ typename std::list<typename AsynchronousCache<Element, Key, Handle>::Entry>::ite
 
     return std::find_if(m_entries.begin(), m_entries.end(), Entry::key_equals(key));
 }
-
-/********************************************************************************************************************/
-/*																													*/
-/********************************************************************************************************************/
 
 template <typename Element, typename Key, typename Handle>
 typename std::list<typename AsynchronousCache<Element, Key, Handle>::Entry>::iterator AsynchronousCache<Element, Key, Handle>::Find(
@@ -589,10 +535,6 @@ typename std::list<typename AsynchronousCache<Element, Key, Handle>::Entry>::ite
     return std::find_if(m_entries.begin(), m_entries.end(), Entry::handle_equals(handle));
 }
 
-/********************************************************************************************************************/
-/*																													*/
-/********************************************************************************************************************/
-
 template <typename Element, typename Key, typename Handle>
 typename std::list<typename AsynchronousCache<Element, Key, Handle>::Entry>::iterator AsynchronousCache<Element, Key, Handle>::Find(
     Element const * pElement)
@@ -601,10 +543,6 @@ typename std::list<typename AsynchronousCache<Element, Key, Handle>::Entry>::ite
 
     return std::find_if(m_entries.begin(), m_entries.end(), Entry::pointer_equals(pElement));
 }
-
-/********************************************************************************************************************/
-/*																													*/
-/********************************************************************************************************************/
 
 template <typename Element, typename Key, typename Handle>
 bool AsynchronousCache<Element, Key, Handle>::MakeRoomForNewEntry(Key const & key)
@@ -633,10 +571,6 @@ bool AsynchronousCache<Element, Key, Handle>::MakeRoomForNewEntry(Key const & ke
     return HasRoomFor(key);
 }
 
-/********************************************************************************************************************/
-/*																													*/
-/********************************************************************************************************************/
-
 template <typename Element, typename Key, typename Handle>
 typename std::list<typename AsynchronousCache<Element, Key, Handle>::Entry>::iterator AsynchronousCache<Element, Key,
                                                                                                         Handle>::Evict(
@@ -645,10 +579,6 @@ typename std::list<typename AsynchronousCache<Element, Key, Handle>::Entry>::ite
     Unload(pEntry->handle);                     // Unload the data
     return m_entries.erase(pEntry);             // Erase the cache entry
 }
-
-/********************************************************************************************************************/
-/*																													*/
-/********************************************************************************************************************/
 
 template <typename Element, typename Key, typename Handle>
 typename std::list<typename AsynchronousCache<Element, Key, Handle>::Entry>::iterator AsynchronousCache<Element, Key,
@@ -673,10 +603,6 @@ typename std::list<typename AsynchronousCache<Element, Key, Handle>::Entry>::ite
 
     return pEntry;
 }
-
-/********************************************************************************************************************/
-/*																													*/
-/********************************************************************************************************************/
 
 template <typename Element, typename Key, typename Handle>
 void AsynchronousCache<Element, Key, Handle>::Reload(typename EntryList::iterator & pEntry)
