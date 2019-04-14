@@ -1,0 +1,8 @@
+get_filename_component(AsynchronousCache_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+include(CMakeFindDependencyMacro)
+
+if(NOT TARGET AsynchronousCache::AsynchronousCache)
+    include("${AsynchronousCache_CMAKE_DIR}/AsynchronousCacheTargets.cmake")
+endif()
+
+set(AsynchronousCache_LIBRARIES AsynchronousCache::AsynchronousCache)
